@@ -24,7 +24,7 @@ public class SumileJson {
 		}
 	}
 
-	public static <T> Object parserField(String str, Class<T> cls) {
+	public static <T> Object parser(String str, Class<T> cls) {
 		ArrayList<KeyValuePare> listField = getAllTypeAndFields(cls);
 		ArrayList<KeyValuePare> listMethod = getAllMethods(cls);
 		Object object = null;
@@ -56,7 +56,7 @@ public class SumileJson {
 					return null;
 				}
 				ArrayList<T> list = null;
-				list = parserField_Array(array, c);
+				list = parser_Array(array, c);
 				if (containsMethods(listMethod, "set" + toUpperCaseFirstOne(listField.get(i).getValue()))) {
 					// 获得json字符串中的值
 					Method method = null;
@@ -94,7 +94,7 @@ public class SumileJson {
 		return (T) object;
 	}
 
-	private static <T> ArrayList<T> parserField_Array(JSONArray array, Class<T> cls) {
+	private static <T> ArrayList<T> parser_Array(JSONArray array, Class<T> cls) {
 		ArrayList<T> list = new ArrayList<T>();
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject jsobj = null;
@@ -103,7 +103,7 @@ public class SumileJson {
 			} catch (JSONException e) {
 				showException(array.toString() + "中的其中一项不是一个JSONObject");
 			}
-			Object obj = parserField(jsobj.toString(), cls);
+			Object obj = parser(jsobj.toString(), cls);
 			list.add((T) obj);
 		}
 		return list;
