@@ -8,7 +8,7 @@ public class MainClass {
 	public static String str = "{\"error\":\"0\",\"data\":[{\"name\":\"1\",\"value\":[{\"name\":\"2\",\"value\":\"3\"},{\"name\":\"4\",\"value\":\"5\"}]},{\"name\":\"6\",\"value\":[{\"name\":\"7\",\"value\":\"8\"},{\"name\":\"9\",\"value\":\"10\"}]}]}";
 
 	public static void main(String[] args) {
-		Bean s = (Bean) (SumileJson.parser(str, Bean.class));
+		Bean s = (Bean) (SumileJson.parse(str, Bean.class));
 		System.out.println("Error:" + s.getError());
 		System.out.println("data:" + s.getData().toString());
 		for (int i = 0; i < s.getData().size(); i++) {

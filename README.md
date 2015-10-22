@@ -120,7 +120,7 @@
 -----------------如（public ArrayList<Bean2> data;）
 
 ## 解析的调用 ##
-    Bean s = (Bean) (SumileJson.parser(str, Bean.class));
+    Bean s = (Bean) (SumileJson.parse(str, Bean.class));
 上面的代码将JSON解析为最大的Bean，获取内部的数据可以使用下面的方法。
 
     System.out.println("Error:" + s.getError());

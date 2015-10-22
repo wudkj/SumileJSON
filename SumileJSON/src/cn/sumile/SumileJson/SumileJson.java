@@ -24,7 +24,7 @@ public class SumileJson {
 		}
 	}
 
-	public static <T> Object parser(String str, Class<T> cls) {
+	public static <T> Object parse(String str, Class<T> cls) {
 		ArrayList<KeyValuePare> listField = getAllTypeAndFields(cls);
 		ArrayList<KeyValuePare> listMethod = getAllMethods(cls);
 		Object object = null;
@@ -103,7 +103,7 @@ public class SumileJson {
 			} catch (JSONException e) {
 				showException(array.toString() + "中的其中一项不是一个JSONObject");
 			}
-			Object obj = parser(jsobj.toString(), cls);
+			Object obj = parse(jsobj.toString(), cls);
 			list.add((T) obj);
 		}
 		return list;
