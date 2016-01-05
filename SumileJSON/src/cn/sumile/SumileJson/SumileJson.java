@@ -11,9 +11,10 @@ import org.json.JSONObject;
 
 /**
  * @author <a href="http://sumile.cn">sumile</a>
- * @version 0.0000001
- * @Time 2015Äê10ÔÂ21ÈÕ17:55:54
- *  ÓĞÎÊÌâÇë·´À¡µ½ÓÊÏä wudkj@163.com»òÔÚÍøÕ¾ÉÏÃæÁôÑÔ
+ * @version 1.1
+ * @Time 2015å¹´10æœˆ21æ—¥17:55:54
+ * @Time 2016å¹´1æœˆ5æ—¥09:24:16
+ *  æœ‰é—®é¢˜è¯·åé¦ˆåˆ°é‚®ç®± wudkj@163.comæˆ–åœ¨ç½‘ç«™ä¸Šé¢ç•™è¨€
  */
 public class SumileJson {
 	private static boolean showError = true;
@@ -31,24 +32,24 @@ public class SumileJson {
 		try {
 			object = cls.newInstance();
 		} catch (InstantiationException e) {
-			showException("Àà" + cls.getName() + "²»ÄÜÊµÀı»¯£¬¿ÉÄÜÒòÎªËüÊÇÒ»¸ö½Ó¿Ú»òÕß³éÏóÀà¡£");
+			showException("ç±»" + cls.getName() + "ä¸èƒ½å®ä¾‹åŒ–ï¼Œå¯èƒ½å› ä¸ºå®ƒæ˜¯ä¸€ä¸ªæ¥å£æˆ–è€…æŠ½è±¡ç±»ã€‚");
 		} catch (IllegalAccessException e) {
-			showException("Àà" + cls.getName() + "µÄĞŞÊÎ·ûÇëĞŞ¸ÄÎªpublic");
+			showException("ç±»" + cls.getName() + "çš„ä¿®é¥°ç¬¦è¯·ä¿®æ”¹ä¸ºpublic");
 		}
 		JSONObject jsobj = null;
 		try {
 			jsobj = new JSONObject(str);
 		} catch (JSONException e) {
-			showException("×Ö·û´®<" + str + ">²»ÄÜ×ª»¯ÎªÒ»¸öJSONObject,Çë¼ì²éËüÊÇ²»ÊÇÓÃ{}°ü×¡µÄ¡£");
+			showException("å­—ç¬¦ä¸²<" + str + ">ä¸èƒ½è½¬åŒ–ä¸ºä¸€ä¸ªJSONObject,è¯·æ£€æŸ¥å®ƒæ˜¯ä¸æ˜¯ç”¨{}åŒ…ä½çš„ã€‚");
 		}
 		for (int i = 0; i < listField.size(); i++) {
 			if (listField.get(i).getKey().toString().contains("java.util.ArrayList")) {
-				// ÊÇArrayListµÄ»°£¬Òª×ª±äÎªÒ»¸öÊı×é
+				// æ˜¯ArrayListçš„è¯ï¼Œè¦è½¬å˜ä¸ºä¸€ä¸ªæ•°ç»„
 				JSONArray array = null;
 				try {
 					array = jsobj.getJSONArray(listField.get(i).getValue());
 				} catch (JSONException e) {
-					showException("×Ö·û´®<" + listField.get(i).getValue() + ">²»ÊÇÒ»¸öJSONArray,Çë¼ì²éËüÊÇ·ñÊÇÒÔ[]°ü×¡µÄ¡£");
+					showException("å­—ç¬¦ä¸²<" + listField.get(i).getValue() + ">ä¸æ˜¯ä¸€ä¸ªJSONArray,è¯·æ£€æŸ¥å®ƒæ˜¯å¦æ˜¯ä»¥[]åŒ…ä½çš„ã€‚");
 				}
 				Class c = null;
 				c = getTurelyClass(listField.get(i).getKey().toString());
@@ -58,32 +59,63 @@ public class SumileJson {
 				ArrayList<T> list = null;
 				list = parser_Array(array, c);
 				if (containsMethods(listMethod, "set" + toUpperCaseFirstOne(listField.get(i).getValue()))) {
-					// »ñµÃjson×Ö·û´®ÖĞµÄÖµ
+					// è·å¾—jsonå­—ç¬¦ä¸²ä¸­çš„å€¼
 					Method method = null;
 					try {
 						method = cls.getDeclaredMethod("set" + toUpperCaseFirstOne(listField.get(i).getValue()), ArrayList.class);
 					} catch (NoSuchMethodException e) {
-						showException("Çë¼ì²é" + "set" + toUpperCaseFirstOne(listField.get(i).getValue()) + "·½·¨ÊÇ·ñ´æÔÚ¡£");
+						showException("è¯·æ£€æŸ¥" + "set" + toUpperCaseFirstOne(listField.get(i).getValue()) + "æ–¹æ³•æ˜¯å¦å­˜åœ¨ã€‚");
 					} catch (SecurityException e) {
 						showException(e.toString());
 					}
 					setData(object, method, list);
 				}
-			} else {
-				// ÊÇµ¥¶ÀµÄÊôĞÔ£¬Ö±½ÓÉèÖÃÖµ
+			} else if (!listField.get(i).getKey().toString().contains("java.lang.String")) {
+				// ä»jsonä¸­è·å¾—å€¼
+				String jsData = null;
+				try {
+					jsData = jsobj.getString(listField.get(i).getValue());
+				} catch (JSONException e) {
+					showException("è·å¾—<" + listField.get(i).getValue() + ">æ—¶å‡ºé”™ï¼Œè¯·æ£€æŸ¥JSONæ–‡æœ¬");
+				}
+				Class c = null;
+				try {
+					c = Class.forName(listField.get(i).getKey().toString().substring(6));
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if (c == null){
+					return null;
+				}
 				if (containsMethods(listMethod, "set" + toUpperCaseFirstOne(listField.get(i).getValue()))) {
-					// »ñµÃjson×Ö·û´®ÖĞµÄÖµ
+					// è·å¾—jsonå­—ç¬¦ä¸²ä¸­çš„å€¼
+					Method method = null;
+					try {
+						method = cls.getDeclaredMethod("set" + toUpperCaseFirstOne(listField.get(i).getValue()), c);
+					} catch (NoSuchMethodException e) {
+						showException("è¯·æ£€æŸ¥" + "set" + toUpperCaseFirstOne(listField.get(i).getValue()) + "æ–¹æ³•æ˜¯å¦å­˜åœ¨ã€‚");
+					} catch (SecurityException e) {
+						showException(e.toString());
+					}
+					Object obj = parse(jsData, c);
+					setData(object, method, obj);
+				}
+			} else {
+				// æ˜¯å•ç‹¬çš„å±æ€§ï¼Œç›´æ¥è®¾ç½®å€¼
+				if (containsMethods(listMethod, "set" + toUpperCaseFirstOne(listField.get(i).getValue()))) {
+					// è·å¾—jsonå­—ç¬¦ä¸²ä¸­çš„å€¼
 					String jsData = null;
 					try {
 						jsData = jsobj.getString(listField.get(i).getValue());
 					} catch (JSONException e) {
-						showException("»ñµÃ<" + listField.get(i).getValue() + ">Ê±³ö´í£¬Çë¼ì²éJSONÎÄ±¾");
+						showException("è·å¾—<" + listField.get(i).getValue() + ">æ—¶å‡ºé”™ï¼Œè¯·æ£€æŸ¥JSONæ–‡æœ¬");
 					}
 					Method method = null;
 					try {
 						method = cls.getDeclaredMethod("set" + toUpperCaseFirstOne(listField.get(i).getValue()), String.class);
 					} catch (NoSuchMethodException e) {
-						showException("Çë¼ì²é" + "set" + toUpperCaseFirstOne(listField.get(i).getValue()) + "·½·¨ÊÇ·ñ´æÔÚ¡£");
+						showException("è¯·æ£€æŸ¥" + "set" + toUpperCaseFirstOne(listField.get(i).getValue()) + "æ–¹æ³•æ˜¯å¦å­˜åœ¨ã€‚");
 					} catch (SecurityException e) {
 						showException(e.toString());
 					}
@@ -101,7 +133,7 @@ public class SumileJson {
 			try {
 				jsobj = (JSONObject) array.get(i);
 			} catch (JSONException e) {
-				showException(array.toString() + "ÖĞµÄÆäÖĞÒ»Ïî²»ÊÇÒ»¸öJSONObject");
+				showException(array.toString() + "ä¸­çš„å…¶ä¸­ä¸€é¡¹ä¸æ˜¯ä¸€ä¸ªJSONObject");
 			}
 			Object obj = parse(jsobj.toString(), cls);
 			list.add((T) obj);
@@ -115,13 +147,13 @@ public class SumileJson {
 		try {
 			c = Class.forName(type);
 		} catch (ClassNotFoundException e) {
-			showException("Àà" + type + "²»´æÔÚ£¬²»ÄÜ±»ÊµÀı»¯");
+			showException("ç±»" + type + "ä¸å­˜åœ¨ï¼Œä¸èƒ½è¢«å®ä¾‹åŒ–");
 		}
 		return c;
 	}
 
 	/**
-	 * ÀàÖĞÊÇ·ñ°üº¬µ±Ç°µÄ·½·¨
+	 * ç±»ä¸­æ˜¯å¦åŒ…å«å½“å‰çš„æ–¹æ³•
 	 */
 	private static boolean containsMethods(ArrayList<KeyValuePare> list, String methodName) {
 		for (int i = 0; i < list.size(); i++) {
@@ -133,21 +165,21 @@ public class SumileJson {
 	}
 
 	/**
-	 * µ÷ÓÃ·½·¨À´ÉèÖÃÖµ
-	 * @param obj	newInstanceÖ®ºóµÄ¶ÔÏó
-	 * @param method	·½·¨
-	 * @param data	ÒªÉèÖÃµÄÊı¾İ
+	 * è°ƒç”¨æ–¹æ³•æ¥è®¾ç½®å€¼
+	 * @param obj	newInstanceä¹‹åçš„å¯¹è±¡
+	 * @param method	æ–¹æ³•
+	 * @param data	è¦è®¾ç½®çš„æ•°æ®
 	 */
 	private static void setData(Object obj, Method method, Object data) {
 		try {
 			method.invoke(obj, data);
 		} catch (Exception e) {
-			throw new RuntimeException("µ÷ÓÃ:" + method.toString() + "·½·¨ÉèÖÃÖµ:" + data + "Ê±³ö´í");
+			throw new RuntimeException("è°ƒç”¨:" + method.toString() + "æ–¹æ³•è®¾ç½®å€¼:" + data + "æ—¶å‡ºé”™");
 		}
 	}
 
 	/**
-	 * »ñµÃÀàÖĞËùÓĞµÄ·½·¨£¬·µ»ØÖµÀïÃæ°üÀ¨ËûµÄ²ÎÊıµÄµÚÒ»¸öÒÔ¼°·½·¨µÄÃû³Æ
+	 * è·å¾—ç±»ä¸­æ‰€æœ‰çš„æ–¹æ³•ï¼Œè¿”å›å€¼é‡Œé¢åŒ…æ‹¬ä»–çš„å‚æ•°çš„ç¬¬ä¸€ä¸ªä»¥åŠæ–¹æ³•çš„åç§°
 	 */
 	private static ArrayList<KeyValuePare> getAllMethods(Class cls) {
 		ArrayList<KeyValuePare> pare = new ArrayList<KeyValuePare>();
@@ -166,7 +198,7 @@ public class SumileJson {
 	}
 
 	/**
-	 * »ñµÃËùÓĞµÄÄÚ²¿ÊôĞÔ
+	 * è·å¾—æ‰€æœ‰çš„å†…éƒ¨å±æ€§
 	 * @return 
 	 */
 	private static Field[] baseGetAllFields(Class cls) {
@@ -175,17 +207,17 @@ public class SumileJson {
 	}
 
 	/**
-	 * »ñµÃËùÓĞÊôĞÔµÄÖµÒÔ¼°ÀàĞÍ
+	 * è·å¾—æ‰€æœ‰å±æ€§çš„å€¼ä»¥åŠç±»å‹
 	 */
 	private static ArrayList<KeyValuePare> getAllTypeAndFields(Class cls) {
 		ArrayList<KeyValuePare> pare = new ArrayList<>();
 		Field[] fs = baseGetAllFields(cls);
 		for (int i = 0; i < fs.length; i++) {
 			Field f = fs[i];
-			f.setAccessible(true); // ÉèÖÃĞ©ÊôĞÔÊÇ¿ÉÒÔ·ÃÎÊµÄ
-			// »ñµÃÊôĞÔµÄÀàĞÍ
+			f.setAccessible(true); // è®¾ç½®å±æ€§æ˜¯å¯ä»¥è®¿é—®çš„
+			// è·å¾—å±æ€§çš„ç±»å‹
 			Type fileType = f.getGenericType();
-			// »ñµÃÊôĞÔµÄÃû³Æ
+			// è·å¾—å±æ€§çš„åç§°
 			String fileName = f.getName();
 			KeyValuePare k = new KeyValuePare();
 			k.setKey(fileType);
