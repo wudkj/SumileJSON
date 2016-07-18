@@ -1,5 +1,5 @@
 ## 使用SumileJSON来快速解析JSON ##
-version=1.1
+version=1.2
 
 **SumileJSON**用来解析多层嵌套的JSON格式数据 
 
@@ -92,9 +92,9 @@ version=1.1
 - ---------------
 ## 解析的调用 ##
     String co = "{\"code\":\"200\",\"message\":\"测试数据\",\"data\":{\"imgs\":[\"http://7xw2my.com1.z0.glb.clouddn.com/qiniu/2016-7/0f0b37c0786efa955beec97b56fcda6f.jpg\"],\"kk\":[{\"sdfdsf\":\"sss\"},{\"sdfdsf\":\"ssss\"}]}}";
-        YingYinBeans bean = (YingYinBeans) SumileJson.parse(co, YingYinBeans.class);
-        System.out.println(bean.getData().getImgs()[0]);
-        System.out.println(bean.getData().getKk().get(0).getSdfdsf());
+    YingYinBeans bean = (YingYinBeans) SumileJson.parse(co, YingYinBeans.class);
+    System.out.println(bean.getData().getImgs()[0]);
+    System.out.println(bean.getData().getKk().get(0).getSdfdsf());
 
 ## 以上代码的输出结果 ##
     http://7xw2my.com1.z0.glb.clouddn.com/qiniu/2016-7/0f0b37c0786efa955beec97b56fcda6f.jpg
