@@ -1,3 +1,7 @@
+# 不要使用这个了，使用fastJSON或者jackson都可以，更方便好用 #
+
+---
+
 ## 使用SumileJSON来快速解析JSON ##
 version=1.2
 
